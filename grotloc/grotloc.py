@@ -25,10 +25,11 @@ import importlib
 import logging
 import sys
 
-from grispy import GriSPy
 from grotloc.data_structures.MultiGrispy import MultiGrispy
-
+from grotloc.utils.argparse_utils import dir_path, file_path
+from grotloc.utils.candidates_utils import write_candidate_pairs
 from grotloc.utils.cfgreader_utils import dot_split_sections
+
 
 # Setup Logging
 logging.basicConfig()
@@ -48,11 +49,13 @@ def parse_arguments(argv):
 
     # Pose Graph File
     parser.add_argument(
-        '--input', help='Input Pose Graph file path', required=True)
+        '--input', help='Input Pose Graph file path', required=True,
+        type=file_path)
 
     # Output File
     parser.add_argument(
-        '--output', help='Output file to write to', required=True)
+        '--output', help='Output folder to write to', required=True,
+        type=dir_path)
 
     # Visualization
     parser.add_argument(
@@ -106,7 +109,8 @@ def load_distance_functions(data_points, cfg):
         except Exception:
             logger.critical(
                 'Could not import Distance Function %s from module %s', 
-                df_cfg['function-name'], df_cfg['function-include'], exc_info=True)
+                df_cfg['function-name'], df_cfg['function-include'],
+                exc_info=True)
             raise
     return df_list
 
@@ -140,27 +144,39 @@ def grotloc(argv):
     """
     args, cfg = parse_arguments(argv)
 
+    # Load Pose Ground Truth (PGT)
     data_points = load_poses(args.input, cfg['pose_ground_truth'])
 
-    distance_fns = load_distance_functions(data_points, cfg['distance_functions'])
+    # Load and verify Distance Functions (DF)
+    distance_fns = load_distance_functions(
+        data_points, cfg['distance_functions'])
     if not distance_fns:
         logger.critical('No distance functions were read, failing execution')
         exit(1)
 
-    data_structure = build_data_structure(data_points, distance_fns, cfg['data_structure'])
+    # Build Data Structure for neighbor query (DS)
+    data_structure = build_data_structure(
+        data_points, distance_fns, cfg['data_structure'])
     logger.info('Data structure created succesfully')
 
+    # Query Loop Candidates (LC)
     loop_candidates = query_loop_candidates(data_structure)
 
-    with open(args.output, 'w') as f:
-        for item in loop_candidates:
-            f.write(f'{item}\n')
+    # Write LC to file in output folder
+    candidate_path = write_candidate_pairs(
+        loop_candidates, args.output, prefix='candidates')
+    if candidate_path:
+        logger.info('Wrote loop candidates to %s', candidate_path)
 
+    # Display confirmation dialogue or confirmation tools
     if args.display:
         logger.info('Starting visual confirmation dialogue...')
         display_candidates(loop_candidates)
 
-        # TODO: write confirmed candidates
+        verified_path = write_candidate_pairs(
+            verified_loops, args.output, prefix='verified')
+        if candidate_path:
+            logger.info('Wrote verified loops to %s', candidate_path)
 
 if __name__ == '__main__':
     grotloc(sys.argv)
