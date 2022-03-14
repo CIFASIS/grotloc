@@ -35,19 +35,54 @@ GroTLoC allows to input a PGT, and by choosing or defining the metrics with wich
 
 ### Input as Pose Ground Truth
 The input file represents the PGT of the robot or system from the dataset to analyze.
+You can define or use functions in `grotloc/pgt_readers`.
 
 Currently the tool accepts inputs of the following formats
+- Comma-Separated Values: comma separated values, plaintext
 - [TUM Ground-truth trajectories](https://vision.in.tum.de/data/datasets/rgbd-dataset/file_formats): space-separated values, plaintext file with values '`timestamp tx ty tz qx qy qz qw`'
 
+
 ### Distance Functions
+GroTLoC allows users to define their own distance functions tailored to their robots or datasets.
+These ditance functions are either defined on `grotloc/distance_functions` or included directly from a library.
+
+The distance functions are defined for the GriSPy data structures as follow:
+```
+df(c0: array_like, centres: array_like, dim: int) -> array_like
+```
+meaning that a distance function `df` has as inputs:
+- c0: the center to which we seek the distance,
+- centres: the C centers to which we want to calculate the distance from a c0,
+- dim: the dimension of each center and c0,
+and returns:
+- an array of elements where the element j-nth corresponds to the distance between c0 and centres_j.
+
+This is basically the [GriSPy](https://github.com/mchalela/GriSPy) definition of custom distance functions.
+
+
+### Data Structure
+To query for LC candidates we use a data structure that allows an efficient query of "neighbors" given the distance functions provided.
+The available data structures are defined in `grotloc/data_structures`
+
+We currently support:
+- `multi-grispy`: creates a series of GriSPy grids, one for each distance function, and calculates the set intersection of each query for each distance function
 
 
 ### Manual review and Output
+By default we output pairs of loop closure candidates as pairs of indices of poses `(i1, i2)` to an output file generated in the `--output` folder provided.
+This generates a file with the "candidates" prefix (e.g.: candidate_loop_candidates.txt).
+
+Manual review can be activated with the `--display` option. **This is yet to be implemented.**
+This generates a file with the "verified" prefix (e.g.: verified_loop_candidates.txt).
+
+
+### Usage Example
 TBD
+
 
 ---
 ## References
-TBD
+- GriSPy: https://github.com/mchalela/GriSPy
 
 ---
 ## Milestones
@@ -58,10 +93,10 @@ TBD
 - [ ] "EuRoC MAV" Input Format
 
 ### Distance
-- [ ] Implement "Euclidian" distance function
+- [x] Implement "Euclidian" distance function
 - [ ] Implement "Spherical Linear Interpolation" distance function
-- [ ] Implement "Great Circle" distance function
-- [ ] Implement "Angular" distance function
+- [x] Implement "Great Circle" distance function
+- [x] Implement "Angular" distance function
 - [ ] Outline distance function limitations
 
 ### Data Structure
@@ -69,5 +104,6 @@ TBD
 - [ ] Describe data structure query complexity
 
 ### Manual Review
-- [x] Rosbag approximate image retrieval
+- [ ] UI for manual review
+- [ ] Rosbag approximate image retrieval
 - [ ] RANSAC Homography calculation
