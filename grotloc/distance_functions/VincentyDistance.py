@@ -1,5 +1,5 @@
 """ 
-Euclidian Distance function part of the GroTLoC python tool
+Vincenty function part of the GroTLoC python tool
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -17,4 +17,4 @@ __authors__ = ["Nicolas Soncini"]
 __license__ = "GPLv3"
 __version__ = "0.0.1"
 
-# Use grispy.distances.euclid
+# Use grispy.distances.vincenty

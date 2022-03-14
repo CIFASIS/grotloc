@@ -17,4 +17,7 @@ __authors__ = ["Nicolas Soncini"]
 __license__ = "GPLv3"
 __version__ = "0.0.1"
 
-# TODO
+from cmath import sin
+import numpy as np
+
+# Use grispy.distances.haversine
