@@ -31,6 +31,53 @@ There are no existing tools to aid with this annotation, as far as we know, so i
 GroTLoC allows to input a PGT, and by choosing or defining the metrics with wich to compare these poses according to the LC method or the robot/system's configuration, generate a LGT.
 
 ---
+## Setup
+You will need python version 3.6+ to run this tool.
+
+### Creating a virtual environment
+It is **highly** recommended that you install this tool and it's requirements in a virtual environment.
+For that create a virtual environment with the following command:
+```
+python3 -m venv venv
+```
+that will create a `venv/` folder in the directory you're at.
+Then simply run
+```
+source venv/bin/activate
+```
+to activate the environment in a given terminal/shell and run the tool, you should see a `(venv)` prefix on your terminal prompt.
+If you want to deactivate the environment you can either close the terminal or run
+```
+deactivate
+```
+and you should see the `(venv)` prefix dissapear.
+
+### Installing Requirements
+To install the required python3 packages you can run the following command:
+```
+pip3 install -r requirements.txt
+```
+
+The same file usually works for other build systems if you're planning to build with a different one.
+
+### Running the tool
+You can get the help prompt by running:
+```
+grotloc/grotloc.py --help
+```
+from the top folder
+
+### Quick Setup
+```
+python -m venv venv &&\
+source venv/bin/activate &&\
+
+pip3 install -r requirements.txt &&\
+
+./grotloc/grotloc.py --help
+```
+
+---
 ## How to Use
 
 ### Input as Pose Ground Truth
