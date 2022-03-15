@@ -1,4 +1,6 @@
 # GroTLoc
+![logo](grotloc_icon.png)
+
 **Ground Truth for Loop Closure** (**GroTLoC**) is a tool that allows users to easily annotate Datasets with Ground Truth for Loop Detection (LGT) and Loop Closure based on previously obtained Positional Ground Truth (PGT).
 
 ---
