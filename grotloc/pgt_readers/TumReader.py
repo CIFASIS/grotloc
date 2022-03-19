@@ -17,7 +17,7 @@ __authors__ = ["Nicolas Soncini"]
 __license__ = "GPLv3"
 __version__ = "0.0.1"
 
-import numpy as np
+import pandas as pd
 
 
 class TumReader():
@@ -27,5 +27,5 @@ class TumReader():
     """
     
     def read_pgt(self, input_file):
-        poses = np.genfromtxt(input_file, delimiter=' ')
+        poses = pd.read_csv(input_file, sep=' ')
         return poses
