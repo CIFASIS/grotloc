@@ -29,6 +29,9 @@ from grotloc.data_structures.MultiGrispy import MultiGrispy
 from grotloc.utils.argparse_utils import dir_path, file_path
 from grotloc.utils.candidates_utils import write_candidate_pairs
 from grotloc.utils.cfgreader_utils import dot_split_sections
+from grotloc.utils.pysimplegui_utils.gui_controller import GUIController
+from grotloc.utils.pysimplegui_utils.loop_candidate_widget import \
+    LoopCandidateWidget
 
 
 # Setup Logging
@@ -133,9 +136,32 @@ def query_loop_candidates(data_structure):
     return neighbor_indices
 
 
-def display_candidates(loop_candidates):
-    logger.warning('Display not yet implemented!')
-    exit(1)
+def display_candidates(data_points, loop_candidates, cfg):
+    """ Shows loop verification widgets """
+    # Create the tool's own GUIController
+    gui_controller = GUIController()
+    # Start the mandatory widget, with candidate data point information
+    lc_widget = LoopCandidateWidget()
+    lc_widget.set_params(data_points, loop_candidates)
+    gui_controller.add(lc_widget)
+    # Start the selected widgets in the configuration
+    for widget_name in cfg:
+        logger.debug('Loading widget %s', widget_name)
+        widget_cfg = cfg[widget_name]
+        try:
+            widget_module = importlib.import_module(widget_cfg['widget-include'])
+            widget_class = getattr(widget_module, widget_cfg['widget-name'])
+            widget = widget_class()
+            logger.info('Loaded widget: %s', widget_name)
+            widget.set_params(
+                **ast.literal_eval(widget_cfg['widget-parameters']),
+                data_points=data_points, loop_candidates=loop_candidates)
+            gui_controller.add(widget)
+        except Exception:
+            logger.warning(
+                'Could not import widget %s', widget_name, exc_info=True)
+    logger.debug('Starting GUI loop...')
+    gui_controller.loop()
 
 
 def grotloc(argv):
@@ -170,13 +196,14 @@ def grotloc(argv):
 
     # Display confirmation dialogue or confirmation tools
     if args.display:
-        logger.info('Starting visual confirmation dialogue...')
-        display_candidates(loop_candidates)
+        logger.debug('Starting GUI widgets...')
+        display_candidates(data_points, loop_candidates, cfg['display'])
 
-        verified_path = write_candidate_pairs(
-            verified_loops, args.output, prefix='verified')
-        if candidate_path:
-            logger.info('Wrote verified loops to %s', candidate_path)
+        # TODO
+        # verified_path = write_candidate_pairs(
+        #     verified_candidates, args.output, prefix='verified')
+        # if verified_path:
+        #     logger.info('Wrote verified loops to %s', verified_path)
 
 if __name__ == '__main__':
     grotloc(sys.argv)
