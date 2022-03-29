@@ -162,7 +162,7 @@ class ScatterMap2D(GUIWidget):
         """
         This method should create a new window for the current object.
         """
-        window = sg.Window('Scatter Map 3D', layout, finalize=True)
+        window = sg.Window('Scatter Map 2D', layout, finalize=True)
         return window
 
     def scatter_figure(self):
