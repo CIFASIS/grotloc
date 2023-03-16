@@ -3,3 +3,5 @@ grispy
 numpy
 pandas
 matplotlib
+PySimpleGUI
+tkinter

@@ -55,6 +55,11 @@ deactivate
 and you should see the `(venv)` prefix dissapear.
 
 ### Installing Requirements
+For the graphical interface you'll need to install tkinter:
+```
+sudo apt install python3-tk
+```
+
 To install the required python3 packages you can run the following command:
 ```
 pip3 install -r requirements.txt
@@ -65,7 +70,7 @@ The same file usually works for other build systems if you're planning to build 
 ### Running the tool
 You can get the help prompt by running:
 ```
-grotloc/grotloc.py --help
+python3 -m grotloc.grotloc --help
 ```
 from the top folder
 
@@ -76,7 +81,7 @@ source venv/bin/activate &&\
 
 pip3 install -r requirements.txt &&\
 
-./grotloc/grotloc.py --help
+python3 -m grotloc.grotloc --help
 ```
 
 ---
